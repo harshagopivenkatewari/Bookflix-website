@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BookFlix - Home</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-image: url('books2.webp');
+        background-size: cover;
+        background-position: center;
+
+    }
+
+    /* NAVBAR */
+    .navbar {
+        background-color: #4a148c;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* LOGO */
+    .logo img {
+        width: 120px;
+    }
+
+    /* NAV LINKS */
+    .nav-links a {
+        color: white;
+        padding: 10px 16px;
+        text-decoration: none;
+        font-size: 18px;
+    }
+
+    .nav-links a:hover {
+        background-color: #7b1fa2;
+        border-radius: 5px;
+    }
+
+    /* SEARCH BAR */
+    .search-box input {
+        width: 250px;
+        padding: 7px;
+        border-radius: 5px;
+        border: none;
+        font-size: 15px;
+    }
+
+    .search-box button {
+        padding: 7px 12px;
+        margin-left: 5px;
+        background-color: #7b1fa2;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .search-box button:hover {
+        background-color: #9c4dcc;
+    }
+
+    .title {
+        text-align: center;
+        color: #4a148c;
+        margin-top: 20px;
+        font-size: 40px;
+        font-weight: bold;
+    }
+
+    .subtitle {
+        text-align: center;
+        margin-top: -10px;
+        font-size: 22px;
+        color:white;
+    }
+
+    .content-box {
+        width: 70%;
+        margin: 20px auto;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 6px solid #4a148c;
+    }
+
+    .category-section {
+        width: 90%;
+        margin: 30px auto;
+        padding: 20px;
+    }
+
+    .category-title {
+        font-size: 26px;
+        color: #4a148c;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
+
+    .books-row {
+        display: flex;
+        overflow-x: auto;
+        gap: 20px;
+    }
+
+    .book-card {
+        min-width: 150px;
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .book-card img {
+        width: 120px;
+        height: 170px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+
+    <!-- LOGO -->
+    <div class="logo">
+        <img src="logo.png" alt="BookFlix Logo">
+    </div>
+
+    <!-- SEARCH --->
+    <div class="search-box">
+        <input type="text" placeholder="Search books...">
+        <button>Search</button>
+    </div>
+
+    <!-- NAV-->
+    <div class="nav-links">
+        <a href="home.html">Home</a>
+        <a href="categories.html">Categories</a>
+        <a href="popular.html">Popular</a>
+        <a href="contact.html">Contact</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+    </div>
+
+</div>
+
+<!-- Titles -->
+<h1 class="title">Welcome to BookFlix</h1>
+<h2 class="subtitle">Your digital library for amazing books</h2>
+
+<!-- About -->
+<div class="content-box">
+    <h3>About BookFlix</h3>
+    <p>BookFlix is your online library where you can explore thousands of books across all categories...</p>
+</div>
+
+<!-- Purpose -->
+<div class="content-box">
+    <h3>Our Purpose</h3>
+    <p>Our aim is to make reading enjoyable and accessible...</p>
+</div>
+
+<!-- Categories -->
+<div class="category-section">
+    <div class="category-title">📚 Trending Novels</div>
+    <div class="books-row">
+        <div class="book-card">
+            <img src="novel1.jpg">
+            <p>Love Story</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+        <div class="book-card">
+            <img src="novel2.jpg">
+            <p>Heart Strings</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+        <div class="book-card">
+            <img src="novel3.jpg">
+            <p>Silent Promises</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+        <div class="book-card">
+            <img src="novel4.jpg">
+            <p>Forever Yours</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+        <div class="book-card">
+            <img src="">
+            <p>Forver Books</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+
+        </div>
+        <div class="book-card">
+            <img src="">
+            <p>The Book</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+
+        </div>
+        <div class="book-card">
+            <img src="">
+            <p>The Book</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+
+        </div>
+            <div class="book-card">
+            <img src="">
+            <p>The Book</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+
+        </div>
+            <div class="book-card">
+            <img src="">
+            <p>The Book</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+
+        </div>
+            <div class="book-card">
+            <img src="">
+            <p>The Book</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+
+        </div>
+    </div>
+</div>
+<div class="category-section">
+    <div class="category-title">📘 Study Materials</div>
+    <div class="books-row">
+        <div class="book-card">
+            <img src="maths.jpg" alt="">
+            <p>Mathematics</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+        <div class="book-card">
+            <img src="science.jpg" alt="">
+            <p>Science Guide</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+        <div class="book-card">
+            <img src="history.jpg" alt="">
+            <p>History Book</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+        <div class="book-card">
+            <img src="english.jpg" alt="">
+            <p>English Notes</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+            <div class="book-card">
+            <img src="english.jpg" alt="">
+            <p>English Notes</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+            <div class="book-card">
+            <img src="english.jpg" alt="">
+            <p>English Notes</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+            <div class="book-card">
+            <img src="english.jpg" alt="">
+            <p>English Notes</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+            <div class="book-card">
+            <img src="english.jpg" alt="">
+            <p>English Notes</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+            <div class="book-card">
+            <img src="english.jpg" alt="">
+            <p>English Notes</p>
+            <button>Buy</button>
+            <button>Sub</button>
+            <button>Read now</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
