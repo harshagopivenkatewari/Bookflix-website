@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Profile | BookFlix</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#121212;
+  color:white;
+  overflow:hidden;
+}
+
+/* ================= PAGE WRAPPER ================= */
+.page-wrapper{
+  height:calc(100vh - 80px);
+  transition:margin-right 0.3s ease;
+}
+
+.page-wrapper.chat-open{
+  margin-right:33.33%;
+}
+
+/* ================= MAIN CONTENT ================= */
+.main-content{
+  height:100%;
+  overflow-y:auto;
+  padding-bottom:80px;
+}
+
+/* ================= PAGE ================= */
+.container{
+  width:90%;
+  margin:40px auto;
+}
+
+.page-title{
+  font-size:34px;
+  margin-bottom:25px;
+}
+
+/* ================= GRID ================= */
+.profile-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:30px;
+}
+
+/* ================= CARD ================= */
+.card{
+  background:#1e1e1e;
+  padding:26px;
+  border-radius:16px;
+}
+
+.card h3{margin-top:0;margin-bottom:10px;}
+.card p{color:#bbb;margin-bottom:16px;}
+
+.info{margin-bottom:10px;color:#ddd;}
+.label{color:#888;font-size:14px;}
+
+/* ================= BUTTONS ================= */
+.btn{
+  display:inline-block;
+  padding:10px 16px;
+  background:#7c3aed;
+  color:white;
+  border-radius:10px;
+  font-weight:bold;
+  border:none;
+  cursor:pointer;
+}
+
+.btn:hover{background:#9f67ff;}
+
+.btn-outline{
+  background:transparent;
+  border:1px solid #7c3aed;
+}
+
+.btn-danger{
+  background:transparent;
+  border:1px solid #ef4444;
+  color:#ef4444;
+}
+.btn-danger:hover{background:#3f1d1d}
+
+/* ================= FORM ================= */
+input{
+  width:100%;
+  padding:10px;
+  margin-bottom:12px;
+  border-radius:8px;
+  border:none;
+  background:#2a2a2a;
+  color:white;
+}
+
+/* ================= MESSAGES ================= */
+.success{
+  background:#064e3b;
+  color:#6ee7b7;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+.error{
+  background:#3f1d1d;
+  color:#fca5a5;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+
+/* ================= CHATBOT ================= */
+.chatbot-panel{
+  position:fixed;
+  top:80px;
+  right:0;
+  width:33.33%;
+  height:calc(100vh - 80px);
+  background:#141414;
+  border-left:1px solid #2a2a2a;
+  display:none;
+  flex-direction:column;
+  z-index:1000;
+}
+
+.chatbot-panel.active{
+  display:flex;
+}
+
+.chatbot-header{
+  flex-shrink:0;
+  padding:14px;
+  background:#7c3aed;
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:bold;
+}
+
+.chatbot-close{
+  cursor:pointer;
+  font-size:22px;
+  padding:4px 10px;
+}
+
+.chatbot-body{
+  flex:1;
+  min-height:0;
+  padding:15px;
+  overflow-y:auto;
+}
+
+.chatbot-input{
+  flex-shrink:0;
+  padding:12px;
+  display:flex;
+  gap:10px;
+  border-top:1px solid #2a2a2a;
+  background:#141414;
+}
+
+.chatbot-input input{
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  background:#2a2a2a;
+  color:white;
+}
+
+.chatbot-input button{
+  padding:0 16px;
+  border:none;
+  border-radius:8px;
+  background:#7c3aed;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+{% include "navbar.html" %}
+
+<div id="pageWrapper" class="page-wrapper">
+  <div class="main-content">
+    <div class="container">
+
+      <h1 class="page-title">👤 My Profile</h1>
+
+      {% if message %}<div class="success">{{ message }}</div>{% endif %}
+      {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+      <div class="profile-grid">
+
+        <!-- ACCOUNT INFO -->
+        <div class="card">
+          <h3>Account Information</h3>
+          <p>Your BookFlix account details</p>
+
+          <div class="info"><span class="label">Name</span><br>{{ user.name }}</div>
+          <div class="info"><span class="label">Email</span><br>{{ user.email }}</div>
+
+          <button class="btn btn-outline" onclick="toggleEdit()">Edit Profile</button>
+
+          <form method="POST" id="editForm" style="display:none;margin-top:16px;">
+            <input type="hidden" name="action" value="edit_profile">
+            <input type="text" name="name" value="{{ user.name }}" required>
+            <input type="email" name="email" value="{{ user.email }}" required>
+            <input type="password" name="password"
+                   placeholder="Enter current password to save changes" required>
+            <button class="btn">Save Changes</button>
+          </form>
+        </div>
+
+        <!-- SECURITY -->
+        <div class="card">
+          <h3>Security</h3>
+          <p>Password & security settings</p>
+
+          <button class="btn btn-outline" onclick="togglePassword()">Change Password</button>
+
+          <form method="POST" id="passwordForm" style="display:none;margin-top:16px;">
+            <input type="hidden" name="action" value="change_password">
+            <input type="password" name="old_password" placeholder="Old Password" required>
+            <input type="password" name="new_password" placeholder="New Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm New Password" required>
+            <button class="btn">Update Password</button>
+          </form>
+        </div>
+
+        <!-- ORDERS -->
+        <div class="card">
+          <h3>My Orders</h3>
+          <p>View and track your purchases</p>
+          <a href="/orders" class="btn">View Orders</a>
+        </div>
+
+        <!-- MEMBERSHIP -->
+        <div class="card">
+          <h3>BookFlix Membership</h3>
+          <p>
+            {% if user.is_prime %}
+              ✅ You are a <strong>BookFlix Community Member</strong>
+            {% else %}
+              🔒 You are not a Community member
+            {% endif %}
+          </p>
+
+          {% if user.is_prime %}
+            <button class="btn btn-danger" onclick="cancelMembership()">Cancel Membership</button>
+          {% else %}
+            <a href="/payment" class="btn btn-outline">Join Membership</a>
+          {% endif %}
+        </div>
+
+        <!-- SUPPORT -->
+        <div class="card">
+          <h3>Help & Support</h3>
+          <p>Need help? Contact us</p>
+          <div class="info">📧 support@bookflix.com</div>
+          <div class="info">📞 +91 99999 88888</div>
+        </div>
+
+        <!-- LOGOUT -->
+        <div class="card">
+          <h3>Logout</h3>
+          <p>Sign out of your account</p>
+          <button class="btn" onclick="logoutUser()">Logout</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CHATBOT ================= -->
+<div class="chatbot-panel" id="chatbotPanel">
+  <div class="chatbot-header">
+    🤖 BookFlix AI
+    <span class="chatbot-close" onclick="toggleChatbot()">✕</span>
+  </div>
+
+  <div class="chatbot-body" id="chatBody">
+    Hi 👋 Tell me your mood or what kind of book you want.
+  </div>
+
+  <div class="chatbot-input">
+    <input id="chatInput" placeholder="Type here..." autocomplete="off">
+    <button onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+<script>
+  
+function toggleChatbot(){
+  document.getElementById("pageWrapper").classList.toggle("chat-open");
+  document.getElementById("chatbotPanel").classList.toggle("active");
+}
+
+
+function toggleEdit(){
+  editForm.style.display="block";
+  passwordForm.style.display="none";
+}
+function togglePassword(){
+  passwordForm.style.display="block";
+  editForm.style.display="none";
+}
+function logoutUser(){
+  fetch("/api/logout",{method:"POST"})
+    .then(()=>window.location="/login");
+}
+function cancelMembership(){
+  if(!confirm("Are you sure you want to cancel your membership?")) return;
+  fetch("/cancel-subscription",{method:"POST"})
+    .then(()=>location.reload());
+}
+</script>
+
+</body>
+</html>

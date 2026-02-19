@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Order Confirmation | BookFlix</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#121212;
+  color:white;
+}
+
+/* ===== NAVBAR ===== */
+.navbar{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  padding:14px 30px;
+  background:#0f1111;
+}
+
+.nav-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.back-btn{
+  font-size:22px;
+  cursor:pointer;
+  color:#bbb;
+}
+.back-btn:hover{color:#fff}
+
+.logo-img{
+  height:42px;
+  cursor:pointer;
+}
+
+/* CENTER */
+.nav-center{
+  display:flex;
+  justify-content:center;
+}
+
+.nav-center input{
+  width:380px;
+  padding:10px 14px;
+  border:none;
+  outline:none;
+  border-radius:20px;
+  background:#1e1e1e;
+  color:white;
+}
+
+.search-btn{
+  padding:10px 22px;
+  border:none;
+  cursor:pointer;
+  background:#7c3aed;
+  color:white;
+  border-radius:20px;
+  margin-left:10px;
+}
+
+/* RIGHT */
+.nav-right{
+  display:flex;
+  gap:22px;
+}
+
+.nav-right a{
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+}
+.nav-right a:hover{color:#a78bfa}
+
+/* ===== PAGE CONTENT ===== */
+.wrapper{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:calc(100vh - 80px);
+}
+
+.box{
+  background:#1e1e1e;
+  padding:40px;
+  border-radius:16px;
+  text-align:center;
+  width:460px;
+}
+
+.box h1{
+  color:#7c3aed;
+  margin-bottom:12px;
+}
+
+.box p{
+  color:#bbb;
+  margin-bottom:12px;
+  font-size:15px;
+}
+
+.order-id{
+  margin:18px 0 26px;
+  font-size:14px;
+  color:#aaa;
+}
+
+.btn{
+  display:block;
+  padding:12px;
+  margin:12px 0;
+  background:#7c3aed;
+  color:white;
+  text-decoration:none;
+  border-radius:10px;
+  font-weight:bold;
+}
+.btn:hover{
+  background:#9f67ff;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<div class="navbar">
+
+  <div class="nav-left">
+    <span class="back-btn" onclick="window.location.href='/home'">←</span>
+    <img src="{{ url_for('static', filename='images/logo.jpg') }}"
+         class="logo-img"
+         onclick="window.location.href='/home'">
+  </div>
+
+  <div class="nav-center">
+    <input type="text" placeholder="Search books...">
+    <button class="search-btn">Search</button>
+  </div>
+
+  <div class="nav-right">
+    <a href="/category">Categories</a>
+    <a href="/wishlist">Wishlist</a>
+    <a href="/cart">Cart</a>
+    <a href="/account">Profile</a>
+  </div>
+
+</div>
+
+<!-- ===== SUCCESS CONTENT ===== -->
+<div class="wrapper">
+  <div class="box">
+
+    {% if has_items and has_prime %}
+      <h1>Order & Subscription Confirmed!</h1>
+      <p>Your books have been ordered successfully.</p>
+      <p>You’re now a BookFlix Prime member. Enjoy premium benefits!</p>
+
+    {% elif has_items %}
+      <h1>Order Placed Successfully!</h1>
+      <p>Your books are on the way. Happy reading 📚</p>
+
+    {% elif has_prime %}
+      <h1>Subscription Activated!</h1>
+      <p>You’re successfully subscribed to BookFlix Prime.</p>
+      <p>Enjoy exclusive books and premium features.</p>
+
+    {% endif %}
+
+    <div class="order-id">
+      Reference ID: <strong>#{{ order_id }}</strong>
+    </div>
+
+    <a href="/orders" class="btn">View Order History</a>
+    <a href="/home" class="btn">Continue Shopping</a>
+
+  </div>
+</div>
+
+</body>
+</html>

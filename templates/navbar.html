@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BookFlix Navbar</title>
+
+  <style>
+    /* ================= NAVBAR ================= */
+
+    .navbar{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      padding:14px 30px;
+      background:#1f1f1f;
+      box-shadow:0 2px 5px rgba(0,0,0,0.6);
+      position:relative;
+      z-index:1000;
+    }
+
+    .nav-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .back-arrow{
+      font-size:22px;
+      cursor:pointer;
+      color:#bbb;
+      user-select:none;
+      display:none;
+    }
+    .back-arrow:hover{ color:#fff; }
+
+    .logo-img{
+      height:42px;
+      cursor:pointer;
+    }
+
+    .nav-center{
+      display:flex;
+      justify-content:center;
+    }
+
+    .search-box{
+      display:flex;
+      gap:10px;
+    }
+
+    .search-box input{
+      padding:10px 16px;
+      border-radius:25px;
+      border:none;
+      width:360px;
+      background:#2a2a2a;
+      color:white;
+      outline:none;
+    }
+
+    .search-btn{
+      padding:9px 16px;
+      border-radius:20px;
+      border:none;
+      background:#7c4dff;
+      color:white;
+      cursor:pointer;
+    }
+
+    .suggest-btn{
+      padding:9px 16px;
+      border-radius:20px;
+      border:1px solid #7c4dff;
+      background:transparent;
+      color:#bb86fc;
+      cursor:pointer;
+    }
+
+    .nav-right{
+      display:flex;
+      gap:20px;
+    }
+
+    .nav-right a{
+      color:#e0e0e0;
+      text-decoration:none;
+      font-size:15px;
+    }
+    .nav-right a:hover{ color:#bb86fc; }
+  </style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<div class="navbar">
+  <div class="nav-left">
+    <span class="back-arrow" id="backArrow" onclick="history.back()">←</span>
+    <a href="/home">
+      <img src="{{ url_for('static', filename='images/logo.jpg') }}" class="logo-img">
+    </a>
+  </div>
+
+  <div class="nav-center">
+    <div class="search-box">
+      <input id="searchInput"
+             placeholder="Search books or tell me your mood…"
+             onkeydown="if(event.key==='Enter') submitSearch()">
+      <button class="search-btn" onclick="submitSearch()">Search</button>
+
+      <!-- ONLY TRIGGER -->
+      <button class="suggest-btn" onclick="toggleChatbot()">🤖 Suggest</button>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <a href="/category">Categories</a>
+    <a href="/wishlist">Wishlist</a>
+    <a href="/cart">Cart</a>
+    <a href="/account">Profile</a>
+  </div>
+</div>
+
+<script>
+function submitSearch(){
+  const q = searchInput.value.trim();
+  if(q) location.href="/search?q="+encodeURIComponent(q);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  backArrow.style.display = location.pathname==="/home" ? "none" : "inline";
+});
+</script>
+
+<!-- CHATBOT JS (controls page layout chatbot) -->
+<script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BookFlix | Payment</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#121212;
+  color:#ffffff;
+}
+
+/* ===== LAYOUT ===== */
+.container{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:30px;
+  width:90%;
+  margin:40px auto;
+}
+
+/* ===== CARDS ===== */
+.card{
+  background:#1e1e1e;
+  padding:24px;
+  border-radius:16px;
+}
+.card h2{margin-top:0}
+
+/* ===== OPTIONS ===== */
+.option,.method{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px;
+  background:#111827;
+  border-radius:12px;
+  margin-bottom:12px;
+}
+.option.disabled,.method.disabled{
+  opacity:0.4;
+  cursor:not-allowed;
+}
+
+/* ===== SUMMARY ===== */
+.summary-item{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  color:#9ca3af;
+  margin:6px 0;
+}
+.summary-row{
+  display:flex;
+  justify-content:space-between;
+  margin:10px 0;
+  color:#bbb;
+}
+.summary-total{
+  font-size:22px;
+  font-weight:bold;
+  margin-top:20px;
+}
+
+/* ===== BUTTON ===== */
+.pay-btn{
+  width:100%;
+  padding:14px;
+  margin-top:20px;
+  font-size:16px;
+  border:none;
+  background:#7c3aed;
+  color:white;
+  cursor:pointer;
+  border-radius:12px;
+  font-weight:bold;
+}
+.pay-btn:hover{background:#9f67ff}
+
+.notice{
+  background:#064e3b;
+  color:#6ee7b7;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:14px;
+}
+.info{
+  font-size:14px;
+  color:#facc15;
+  margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- USE GLOBAL NAVBAR -->
+{% include "navbar.html" %}
+
+<form method="POST" action="/place-order">
+
+<div class="container">
+
+<!-- ================= LEFT ================= -->
+<div>
+
+  {% if has_cart %}
+  <div class="card">
+    <h2>Cart Items</h2>
+    <label class="option">
+      <div>
+        <input type="checkbox" id="payCart" checked>
+        Pay for Cart Items
+      </div>
+      <span>₹{{ cart_total }}</span>
+    </label>
+  </div>
+  {% endif %}
+
+  <!-- ===== MEMBERSHIP ===== -->
+  <div class="card" style="margin-top:20px;">
+    <h2>BookFlix Membership</h2>
+
+    {% if is_prime %}
+      <div class="notice"> You are already a BookFlix Community Member</div>
+
+      <label class="option disabled">
+        <div><input type="radio" disabled> Monthly</div>
+        <span>₹199</span>
+      </label>
+
+      <label class="option disabled">
+        <div><input type="radio" disabled> Yearly</div>
+        <span>₹1,499</span>
+      </label>
+
+      <label class="option">
+        <div><input type="radio" checked disabled> Membership Active</div>
+        <span>₹0</span>
+      </label>
+
+    {% else %}
+      <label class="option">
+        <div><input type="radio" name="prime" value="monthly"> Monthly</div>
+        <span>₹199</span>
+      </label>
+
+      <label class="option">
+        <div><input type="radio" name="prime" value="yearly"> Yearly</div>
+        <span>₹1,499</span>
+      </label>
+
+      <label class="option">
+        <div><input type="radio" name="prime" value="none" checked> No Membership</div>
+        <span>₹0</span>
+      </label>
+    {% endif %}
+  </div>
+
+  <!-- ===== PAYMENT METHOD ===== -->
+  <div class="card" style="margin-top:20px;">
+    <h2>Payment Method</h2>
+
+    <label class="method">
+      <input type="radio" name="payment_method" value="upi" checked>
+      UPI (GPay / PhonePe)
+    </label>
+
+    <label class="method">
+      <input type="radio" name="payment_method" value="card">
+      Credit / Debit Card
+    </label>
+
+    <label class="method">
+      <input type="radio" name="payment_method" value="netbanking">
+      Net Banking
+    </label>
+
+    <label class="method disabled" id="codMethod">
+      <input type="radio" name="payment_method" value="cod" disabled>
+      Cash on Delivery
+      <span class="info">(Only for cart)</span>
+    </label>
+  </div>
+
+</div>
+
+<!-- ================= RIGHT ================= -->
+<div class="card">
+  <h2>Order Summary</h2>
+
+  {% for item in cart_items %}
+    <div class="summary-item">
+      <span>{{ item.title }} × {{ item.quantity }}</span>
+      <span>₹{{ item.price * item.quantity }}</span>
+    </div>
+  {% endfor %}
+
+  <div class="summary-row">
+    <span>Cart</span>
+    <span id="cartAmount"
+          data-cart="{{ cart_total }}"
+          data-is-prime="{{ 'true' if is_prime else 'false' }}">
+      ₹{{ cart_total }}
+    </span>
+  </div>
+
+  <div class="summary-row">
+    <span>Membership</span>
+    <span id="primeCost">₹0</span>
+  </div>
+
+  <hr style="border:1px solid #333;margin:16px 0;">
+
+  <div class="summary-total">
+    Total Payable: <span id="finalAmount">₹{{ cart_total }}</span>
+  </div>
+
+  <button class="pay-btn">Pay Now</button>
+</div>
+
+</div>
+</form>
+
+<!-- ===== DATASET JS ===== -->
+<script>
+const cartAmountEl = document.getElementById("cartAmount");
+const cartBase = Number(cartAmountEl.dataset.cart || 0);
+const isPrimeUser = cartAmountEl.dataset.isPrime === "true";
+
+const cartCheckbox = document.getElementById("payCart");
+const primeCostEl = document.getElementById("primeCost");
+const finalAmountEl = document.getElementById("finalAmount");
+const codMethod = document.getElementById("codMethod");
+
+let primeAmount = 0;
+
+function updateTotal(){
+  const cartAmount =
+    cartCheckbox && cartCheckbox.checked ? cartBase : 0;
+
+  cartAmountEl.innerText = "₹" + cartAmount;
+  primeCostEl.innerText = "₹" + primeAmount;
+  finalAmountEl.innerText = "₹" + (cartAmount + primeAmount);
+
+  const codInput = codMethod.querySelector("input");
+  if(primeAmount > 0 || cartAmount === 0){
+    codMethod.classList.add("disabled");
+    codInput.disabled = true;
+  }else{
+    codMethod.classList.remove("disabled");
+    codInput.disabled = false;
+  }
+}
+
+if(!isPrimeUser){
+  document.querySelectorAll("input[name='prime']").forEach(radio=>{
+    radio.addEventListener("change", ()=>{
+      if(radio.value === "monthly") primeAmount = 199;
+      else if(radio.value === "yearly") primeAmount = 1499;
+      else primeAmount = 0;
+      updateTotal();
+    });
+  });
+}
+
+if(cartCheckbox){
+  cartCheckbox.addEventListener("change", updateTotal);
+}
+
+updateTotal();
+</script>
+
+</body>
+</html>

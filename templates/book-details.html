@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ book.title }} | BookFlix</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#121212;
+  color:#e0e0e0;
+  overflow:hidden;
+}
+
+/* ================== LAYOUT ================== */
+.page-layout{
+  display:grid;
+  grid-template-columns:1fr;
+  height:calc(100vh - 80px);
+  transition:0.3s ease;
+}
+
+.page-layout.chat-open{
+  grid-template-columns:2fr 1fr;
+}
+
+/* ================== MAIN CONTENT ================== */
+.main-content{
+  overflow-y:auto;
+  padding-bottom:80px;
+}
+
+/* ================== BOOK CARD ================== */
+.box{
+  max-width:1100px;
+  margin:40px auto;
+  display:flex;
+  gap:30px;
+  background:#1e1e1e;
+  padding:28px;
+  border-radius:14px;
+}
+
+.left{width:270px;}
+.left img{
+  width:100%;
+  height:380px;
+  object-fit:cover;
+  border-radius:12px;
+}
+
+.image-buttons{
+  margin-top:18px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.image-buttons button{
+  width:100%;
+  padding:11px;
+  border:none;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+  background:#7c3aed;
+  color:white;
+}
+.image-buttons button:hover{background:#9f67ff;}
+
+button.disabled{
+  background:#3a3a3a !important;
+  color:#888 !important;
+  cursor:not-allowed;
+}
+
+.wishlist-btn{
+  background:#2a2a2a;
+  color:#f87171;
+  border:1px solid #444;
+}
+
+/* ================== RIGHT ================== */
+.right{flex:1;}
+.right h2{margin-top:0;font-size:30px;}
+.meta{color:#ccc;}
+
+.price-box{margin:10px 0;font-size:20px;}
+.price-box del{color:#777;margin-right:8px;}
+.price-box .final{color:#4ade80;font-weight:bold;}
+
+.saving-text{
+  margin-top:6px;
+  font-size:14px;
+  color:#4ade80;
+}
+.membership-text{
+  margin-top:6px;
+  font-size:14px;
+  color:#facc15;
+}
+
+.rating-display{margin:6px 0 14px;color:#facc15;font-size:16px;}
+
+/* ================== AUDIO ================== */
+#audioPlayer{
+  width:100%;
+  margin-top:12px;
+  display:none;
+}
+
+/* ================== TABS ================== */
+.tabs{
+  margin-top:22px;
+  border-bottom:2px solid #333;
+}
+.tabs button{
+  padding:10px 15px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:#bbb;
+  font-weight:bold;
+}
+.tabs button.active{
+  border-bottom:3px solid #8b5cf6;
+  color:#8b5cf6;
+}
+.tab-content{display:none;margin-top:16px;}
+.tab-content.active{display:block;}
+
+.text-box{
+  background:#1a1a1a;
+  padding:18px;
+  border-radius:10px;
+  line-height:1.6;
+}
+
+/* ================== REVIEW ================== */
+.review-section{
+  max-width:1100px;
+  margin:30px auto 60px;
+  background:#1e1e1e;
+  padding:25px;
+  border-radius:14px;
+}
+
+.stars span{
+  font-size:26px;
+  cursor:pointer;
+  color:#555;
+}
+.stars span.active{color:#facc15;}
+
+.review-section textarea{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border-radius:8px;
+  border:none;
+  background:#2a2a2a;
+  color:white;
+}
+
+.review-submit{
+  margin-top:12px;
+  padding:12px 20px;
+  border:none;
+  border-radius:8px;
+  background:#7c3aed;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* ================== CHATBOT ================== */
+.chatbot-panel{
+  display:none;
+  background:#141414;
+  border-left:1px solid #2a2a2a;
+
+  height:100%;
+  overflow:hidden;
+
+  flex-direction:column;
+}
+
+/* ONLY SHOW WHEN SUGGEST IS CLICKED */
+.page-layout.chat-open .chatbot-panel{
+  display:flex;
+}
+
+.chatbot-header{
+  padding:14px;
+  background:#7c3aed;
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:bold;
+  flex-shrink:0;
+}
+
+.chatbot-close{
+  font-size:22px;
+  cursor:pointer;
+  padding:4px 10px;
+}
+
+/* SCROLL FIX */
+.chatbot-body{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+  min-height:0;
+}
+
+.chatbot-input{
+  display:flex;
+  gap:10px;
+  padding:12px;
+  border-top:1px solid #2a2a2a;
+  flex-shrink:0;
+}
+
+.chatbot-input input{
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  background:#2a2a2a;
+  color:white;
+}
+
+.chatbot-input button{
+  padding:0 16px;
+  border:none;
+  border-radius:8px;
+  background:#7c3aed;
+  color:white;
+}
+
+</style>
+</head>
+
+<body>
+
+{% include "navbar.html" %}
+
+<div id="pageLayout" class="page-layout">
+
+  <div class="main-content">
+
+    <div class="box">
+      <div class="left">
+        <img src="{{ url_for('static', filename=book.image_path) }}">
+
+        <div class="image-buttons">
+
+          {% if is_prime %}
+            <button onclick="readBook()">📖 Read</button>
+            <button onclick="downloadBook()">⬇ Download</button>
+          {% else %}
+            <button class="disabled">🔒 Read</button>
+            <button class="disabled">🔒 Download</button>
+          {% endif %}
+
+          {% if book.audio_path %}
+            {% if is_prime %}
+              <button onclick="playAudio()">🎧 Listen Audio</button>
+            {% else %}
+              <button class="disabled">🔒 Audio (Membership)</button>
+            {% endif %}
+          {% else %}
+            <button class="disabled">🎧 Audio Unavailable</button>
+          {% endif %}
+
+          <button onclick="location.href='/add-to-cart/{{ book.id }}'">Add to Cart</button>
+
+          {% if is_in_wishlist %}
+            <button class="wishlist-btn disabled" disabled>✔ Added to Wishlist</button>
+          {% else %}
+            <button class="wishlist-btn" onclick="location.href='/add-to-wishlist/{{ book.id }}'">
+              ❤️ Add to Wishlist
+            </button>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="right">
+        <h2>{{ book.title }}</h2>
+        <p class="meta">Category: {{ category_name }}</p>
+
+        <div class="price-box">
+          {% if is_prime %}
+            <del>₹{{ book.price }}</del>
+            <span class="final">₹{{ book.final_price }}</span>
+          {% else %}
+            <span class="final">₹{{ book.final_price }}</span>
+          {% endif %}
+        </div>
+
+        {% if is_prime %}
+          <div class="saving-text">You saved ₹{{ book.discount_amount }} with BookFlix Membership</div>
+        {% else %}
+          <div class="membership-text">Save ₹{{ book.discount_amount }} with BookFlix Membership</div>
+        {% endif %}
+
+        <div class="rating-display">⭐ 4.5 / 5</div>
+
+        <audio id="audioPlayer" controls></audio>
+
+        <div class="tabs">
+          <button class="active" onclick="openTab('about',this)">About Book</button>
+          <button onclick="openTab('author',this)">Author Details</button>
+        </div>
+
+        <div id="about" class="tab-content active">
+          <div class="text-box">{{ book.about }}</div>
+        </div>
+
+        <div id="author" class="tab-content">
+          <div class="text-box">{{ book.author_details }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-section">
+      <h3>⭐ Rate & Review</h3>
+
+      <div class="stars">
+        <span onclick="rate(1)">★</span>
+        <span onclick="rate(2)">★</span>
+        <span onclick="rate(3)">★</span>
+        <span onclick="rate(4)">★</span>
+        <span onclick="rate(5)">★</span>
+      </div>
+
+      <textarea rows="4" placeholder="Write your review..."></textarea>
+      <button class="review-submit" onclick="submitReview()">Submit Review</button>
+      <p id="reviewMessage"></p>
+    </div>
+  </div>
+
+  <div class="chatbot-panel">
+    <div class="chatbot-header">
+      🤖 BookFlix AI
+      <span class="chatbot-close" onclick="toggleChatbot()">✕</span>
+    </div>
+
+    <div class="chatbot-body" id="chatBody">
+      Hi 👋 Tell me your mood or what kind of book you want.
+    </div>
+
+    <div class="chatbot-input">
+      <input id="chatInput" placeholder="Type here..." autocomplete="off">
+      <button onclick="sendChat()">➤</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function readBook(){
+  window.open("/static/{{ book.pdf_path }}","_blank");
+}
+function downloadBook(){
+  const a=document.createElement("a");
+  a.href="/static/{{ book.pdf_path }}";
+  a.download="{{ book.title }}.pdf";
+  a.click();
+}
+function playAudio(){
+  const p=document.getElementById("audioPlayer");
+  p.src="/static/{{ book.audio_path }}";
+  p.style.display="block";
+  p.play();
+}
+
+let selectedRating=0;
+function rate(n){
+  selectedRating=n;
+  document.querySelectorAll(".stars span")
+    .forEach((s,i)=>s.classList.toggle("active",i<n));
+}
+function submitReview(){
+  document.getElementById("reviewMessage").innerText="Thank you for your review!";
+}
+
+function openTab(id,btn){
+  document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  btn.classList.add("active");
+}
+</script>
+
+</body>
+</html>

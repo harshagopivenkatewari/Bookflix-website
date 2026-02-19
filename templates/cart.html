@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BookFlix | Cart</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#121212;
+  color:#ffffff;
+  overflow:hidden; 
+}
+
+/* ================= GRID LAYOUT ================= */
+.page-layout{
+  display:grid;
+  grid-template-columns:1fr;
+  height:calc(100vh - 80px); 
+  transition:0.3s ease;
+}
+
+.page-layout.chat-open{
+  grid-template-columns:2fr 1fr; 
+}
+
+/* ================= MAIN CONTENT ================= */
+.main-content{
+  overflow-y:auto;
+  padding-bottom:80px;
+}
+
+/* ===== PAGE ===== */
+.page-title{text-align:center;margin:40px 0 10px;font-size:34px;}
+.sub-title{text-align:center;color:#aaa;margin-bottom:30px;}
+
+/* ===== CART ITEM ===== */
+.cart-item{
+  display:flex;
+  gap:20px;
+  background:#1e1e1e;
+  padding:18px;
+  margin:20px auto;
+  width:85%;
+  border-radius:14px;
+}
+
+.cart-item img{
+  width:120px;
+  height:170px;
+  object-fit:cover;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.details{flex:1;}
+.details h3{
+  margin:0 0 8px;
+  cursor:pointer;
+}
+
+.price{color:#bbb;margin-bottom:10px;}
+
+.qty-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.qty-btn{
+  width:34px;
+  height:34px;
+  border:none;
+  background:#6366f1;
+  color:white;
+  font-size:18px;
+  cursor:pointer;
+  border-radius:6px;
+}
+
+.actions{
+  margin-top:14px;
+  display:flex;
+  gap:12px;
+}
+
+.actions button{
+  padding:8px 14px;
+  border:none;
+  cursor:pointer;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+.remove-btn{background:#b00020;color:white;}
+.save-btn{background:#f59e0b;color:white;}
+
+/* ===== TOTAL ===== */
+.total-box{
+  width:85%;
+  margin:40px auto;
+  background:#1e1e1e;
+  padding:22px;
+  border-radius:14px;
+  text-align:right;
+  font-size:18px;
+}
+
+.checkout-btn{
+  margin-top:15px;
+  padding:12px 26px;
+  font-size:16px;
+  border:none;
+  background:#22c55e;
+  color:white;
+  cursor:pointer;
+  border-radius:10px;
+}
+.checkout-btn:hover{background:#16a34a}
+
+.empty{text-align:center;color:#aaa;margin-top:80px;}
+
+/* ================= CHATBOT ================= */
+.chatbot-panel{
+  display:none;               /* hidden by default */
+  background:#141414;
+  border-left:1px solid #2a2a2a;
+
+  height:100%;
+  overflow:hidden;
+
+  flex-direction:column;
+}
+
+/* ONLY open when Suggest clicked */
+.page-layout.chat-open .chatbot-panel{
+  display:flex;
+}
+
+/* HEADER */
+.chatbot-header{
+  flex-shrink:0;
+  padding:14px;
+  background:#7c3aed;
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:bold;
+}
+
+/* CLOSE */
+.chatbot-close{
+  cursor:pointer;
+  font-size:22px;
+  padding:4px 10px;
+}
+
+.chatbot-body{
+  flex:1;
+  min-height:0;               
+  padding:15px;
+  overflow-y:auto;
+}
+
+/* INPUT */
+.chatbot-input{
+  flex-shrink:0;
+  padding:12px;
+  display:flex;
+  gap:10px;
+  border-top:1px solid #2a2a2a;
+}
+
+.chatbot-input input{
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  background:#2a2a2a;
+  color:white;
+}
+
+.chatbot-input button{
+  padding:0 16px;
+  border:none;
+  border-radius:8px;
+  background:#7c3aed;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+{% include "navbar.html" %}
+
+<!-- ================= PAGE LAYOUT ================= -->
+<div id="pageLayout" class="page-layout">
+
+  <!-- ================= MAIN ================= -->
+  <div class="main-content">
+
+    <h2 class="page-title">🛒 My Cart</h2>
+    <p class="sub-title">Books you're about to enjoy</p>
+
+    {% if cart_books %}
+      {% for item in cart_books %}
+      <div class="cart-item" data-book-id="{{ item.id }}">
+
+        <img src="{{ url_for('static', filename=item.image_path) }}"
+             onclick="location.href='/book-details?book_id={{ item.id }}'">
+
+        <div class="details">
+          <h3 onclick="location.href='/book-details?book_id={{ item.id }}'">
+            {{ item.title }}
+          </h3>
+
+          <div class="price">
+            Price: ₹{{ item.unit_price }} × <span class="qty">{{ item.quantity }}</span><br>
+            <strong>Subtotal: ₹<span class="subtotal">{{ item.subtotal }}</span></strong>
+          </div>
+
+          <div class="qty-box">
+            <button class="qty-btn" onclick="updateQty(this,'decrease')">−</button>
+            <button class="qty-btn" onclick="updateQty(this,'increase')">+</button>
+          </div>
+
+          <div class="actions">
+            <button class="remove-btn" onclick="removeFromCart(this)">Remove</button>
+            <button class="save-btn" onclick="saveForLater(this)">Save for later</button>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="total-box">
+        <strong>Total Amount:</strong>
+        ₹<span id="totalAmount">{{ total_amount }}</span><br>
+        <button class="checkout-btn" onclick="proceedToPayment()">
+          Proceed to Payment →
+        </button>
+      </div>
+
+    {% else %}
+      <div class="empty">
+        Your cart is empty 🛒<br>
+        Start adding books!
+      </div>
+    {% endif %}
+
+  </div>
+
+  <!-- ================= CHATBOT ================= -->
+  <div class="chatbot-panel" id="chatbotPanel">
+    <div class="chatbot-header">
+      🤖 BookFlix AI
+      <span class="chatbot-close" onclick="toggleChatbot()">✕</span>
+    </div>
+
+    <div class="chatbot-body" id="chatBody">
+      Hi 👋 Tell me your mood or what kind of book you want.
+    </div>
+
+    <div class="chatbot-input">
+      <input id="chatInput" placeholder="Type here..." autocomplete="off">
+      <button onclick="sendChat()">➤</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+
+function updateQty(btn, action){
+  const card = btn.closest(".cart-item");
+  const bookId = card.dataset.bookId;
+
+  fetch(`/cart/update/${bookId}`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ action })
+  })
+  .then(r=>r.json())
+  .then(d=>{
+    card.querySelector(".qty").innerText = d.item.quantity;
+    card.querySelector(".subtotal").innerText = d.item.subtotal.toFixed(2);
+    document.getElementById("totalAmount").innerText = d.total.toFixed(2);
+  });
+}
+
+function removeFromCart(btn){
+  const card = btn.closest(".cart-item");
+  const bookId = card.dataset.bookId;
+
+  fetch(`/cart/remove/${bookId}`,{method:"POST"})
+    .then(r=>r.json())
+    .then(d=>{
+      card.remove();
+      document.getElementById("totalAmount").innerText = d.total.toFixed(2);
+      if(!document.querySelector(".cart-item")) location.reload();
+    });
+}
+
+function saveForLater(btn){
+  const bookId = btn.closest(".cart-item").dataset.bookId;
+  fetch(`/cart/save-for-later/${bookId}`,{method:"POST"})
+    .then(()=>location.reload());
+}
+
+function proceedToPayment(){
+  window.location.href="/payment";
+}
+</script>
+
+</body>
+</html>

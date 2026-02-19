@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BookFlix – Unlimited Books</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* BACKGROUND */
+body{
+  background: linear-gradient(rgba(0,0,0,0.75),rgba(0,0,0,0.75)),
+  url("{{ url_for('static', filename='images/background.jpg') }}") center/cover no-repeat;
+  color:white;
+}
+
+/* NAVBAR */
+.navbar{
+  display:flex;
+  justify-content:space-between;
+  padding:20px 40px;
+  align-items:center;
+}
+.navbar button{
+  background:#ffba08;
+  border:none;
+  padding:8px 18px;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:4px;
+}
+
+.hero{
+  text-align:center;
+  margin-top:90px;
+}
+.hero h1{
+  font-size:55px;
+  margin-bottom:15px;
+}
+.hero h3{
+  font-weight:normal;
+  margin-bottom:20px;
+}
+.hero p{
+  margin-bottom:20px;
+}
+
+/* EMAIL BOX */
+.email-box{
+  display:flex;
+  justify-content:center;
+}
+.email-box input{
+  width:320px;
+  padding:14px;
+  font-size:16px;
+  border:none;
+}
+.email-box button{
+  padding:14px 25px;
+  font-size:18px;
+  background:#ffba08;
+  border:none;
+  cursor:pointer;
+}
+
+/* MESSAGE TEXT (NO POPUP) */
+.message{
+  margin-top:12px;
+  color:#ffba08;
+  display:none;
+}
+
+/* TRENDING */
+.trending{
+  margin-top:100px;
+  padding:0 40px;
+}
+.trending h2{
+  margin-bottom:15px;
+}
+
+/* AUTO SCROLL */
+.row-wrapper{
+  overflow:hidden;
+}
+.row{
+  display:flex;
+  gap:20px;
+  width:max-content;
+  animation: scrollBooks 30s linear infinite;
+}
+.book{
+  min-width:200px;
+  cursor:pointer;
+}
+.book img{
+  width:100%;
+  height:280px;
+  border-radius:8px;
+  transition:0.3s;
+}
+.book img:hover{
+  transform:scale(1.1);
+}
+
+@keyframes scrollBooks{
+  0%{ transform:translateX(0); }
+  100%{ transform:translateX(-50%); }
+}
+
+/* FOOTER */
+footer{
+  background:#000;
+  padding:60px 40px;
+  margin-top:120px;
+}
+.footer-container{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:40px;
+}
+.footer-container h3{
+  color:#ffba08;
+  margin-bottom:10px;
+}
+.footer-container p{
+  color:#aaa;
+  font-size:14px;
+  line-height:1.6;
+}
+.copyright{
+  margin-top:30px;
+  text-align:center;
+  color:#777;
+  font-size:13px;
+}
+
+/* NAVBAR LOGO */
+.logo-img{
+  height:40px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <img src="{{ url_for('static', filename='images/logo.jpg') }}" class="logo-img">
+  <div>
+    <button onclick="goLogin()">LogIn</button>
+    <button onclick="goRegister()">Register</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Unlimited Books, Stories & Knowledge</h1>
+  <h3>Read anywhere. Learn anytime.</h3>
+  <p>Ready to explore? Enter your email to continue.</p>
+
+  <div class="email-box">
+    <input type="email" id="email" placeholder="Email address">
+    <button onclick="getStarted()">Get Started ➜</button>
+  </div>
+
+  <div id="heroMessage" class="message"></div>
+</div>
+
+<!-- TRENDING BOOKS -->
+<div class="trending">
+  <h2>Trending Books</h2>
+
+  <div class="row-wrapper">
+    <div class="row">
+
+      {% for book in trending_books %}
+      <div class="book" onclick="askLogin()">
+        <img src="{{ url_for('static', filename=book.image_path) }}">
+      </div>
+      {% endfor %}
+
+      <!-- duplicate for smooth scroll -->
+      {% for book in trending_books %}
+      <div class="book" onclick="askLogin()">
+        <img src="{{ url_for('static', filename=book.image_path) }}">
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+
+  <div id="bookMessage" class="message"></div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-container">
+    <div>
+      <h3>Our Purpose</h3>
+      <p>BookFlix is created to inspire reading and learning.</p>
+    </div>
+
+    <div>
+      <h3>What We Offer</h3>
+      <p>
+        ✔ Trending Books<br>
+        ✔ Audio Books<br>
+        ✔ Easy Reading<br>
+        ✔ Knowledge for Everyone
+      </p>
+    </div>
+
+    <div>
+      <h3>Contact Us</h3>
+      <p>Email: support@bookflix.com</p>
+    </div>
+  </div>
+
+  <p class="copyright">© 2025 BookFlix. All rights reserved.</p>
+</footer>
+
+<script>
+function getStarted(){
+  const email = document.getElementById("email").value;
+  const msg = document.getElementById("heroMessage");
+
+  if(email === ""){
+    msg.style.display = "block";
+    msg.innerText = "Please enter your email to continue";
+    return;
+  }
+
+  msg.style.display = "block";
+  msg.innerText = "Please login or register to continue";
+  setTimeout(() => window.location.href = "/login", 1200);
+}
+
+function askLogin(){
+  const msg = document.getElementById("bookMessage");
+  msg.style.display = "block";
+  msg.innerText = "Please login or register to view this book";
+  setTimeout(() => window.location.href = "/login", 1200);
+}
+
+function goLogin(){
+  window.location.href = "/login";
+}
+function goRegister(){
+  window.location.href = "/register";
+}
+</script>
+
+</body>
+</html>

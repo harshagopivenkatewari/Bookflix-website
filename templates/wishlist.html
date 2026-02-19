@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BookFlix - Wishlist</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#121212;
+  color:#e0e0e0;
+  overflow:hidden; 
+}
+
+/* ================= GRID LAYOUT ================= */
+.page-layout{
+  display:grid;
+  grid-template-columns:1fr;
+  height:calc(100vh - 80px); 
+  transition:0.3s ease;
+}
+
+.page-layout.chat-open{
+  grid-template-columns:2fr 1fr;
+}
+
+/* ================= MAIN ================= */
+.main-content{
+  overflow-y:auto;
+  padding-bottom:60px;
+}
+
+/* ================= CHATBOT ================= */
+.chatbot-panel{
+  display:none; /* hidden by default */
+  background:#141414;
+  border-left:1px solid #2a2a2a;
+
+  height:100%;
+  overflow:hidden;
+
+  flex-direction:column;
+}
+
+/* ONLY visible when Suggest clicked */
+.page-layout.chat-open .chatbot-panel{
+  display:flex;
+}
+
+/* HEADER */
+.chatbot-header{
+  flex-shrink:0;
+  padding:14px;
+  background:#7c3aed;
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:bold;
+}
+
+/* CLOSE */
+.chatbot-close{
+  cursor:pointer;
+  font-size:22px;
+  padding:4px 10px;
+  border-radius:6px;
+}
+.chatbot-close:hover{
+  background:rgba(255,255,255,0.15);
+}
+
+.chatbot-body{
+  flex:1;
+  min-height:0;        
+  padding:15px;
+  overflow-y:auto;
+}
+
+/* INPUT */
+.chatbot-input{
+  flex-shrink:0;
+  display:flex;
+  gap:10px;
+  padding:12px;
+  border-top:1px solid #2a2a2a;
+  background:#141414;
+}
+
+.chatbot-input input{
+  flex:1;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  background:#2a2a2a;
+  color:white;
+}
+
+.chatbot-input button{
+  padding:0 16px;
+  border:none;
+  border-radius:8px;
+  background:#7c3aed;
+  color:white;
+  cursor:pointer;
+}
+
+/* ================= PAGE ================= */
+.title{
+  text-align:center;
+  color:#bb86fc;
+  font-size:42px;
+  margin-top:30px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#aaa;
+  margin-top:-10px;
+}
+
+/* GRID */
+.books-grid{
+  width:90%;
+  margin:40px auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:30px;
+}
+
+.book-card{
+  background:#1e1e1e;
+  padding:15px;
+  border-radius:12px;
+  text-align:center;
+}
+
+.book-card img{
+  width:140px;
+  height:200px;
+  object-fit:cover;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.book-title{
+  margin:12px 0;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.actions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.actions button{
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.cart-btn{
+  background:#3b82f6;
+  color:white;
+}
+
+.remove-btn{
+  background:#ef4444;
+  color:white;
+}
+
+.empty{
+  text-align:center;
+  margin-top:80px;
+  color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+{% include 'navbar.html' %}
+
+<div id="pageLayout" class="page-layout">
+
+<!-- ================= MAIN ================= -->
+<div class="main-content">
+
+  <h1 class="title">Your Wishlist ❤️</h1>
+  <h2 class="subtitle">Books you saved for later</h2>
+
+  {% if wishlist_books %}
+  <div class="books-grid">
+    {% for book in wishlist_books %}
+    <div class="book-card">
+
+      <img src="{{ url_for('static', filename=book.image_path) }}"
+           onclick="openBook('{{ book.id }}')">
+
+      <div class="book-title"
+           onclick="openBook('{{ book.id }}')">
+        {{ book.title }}
+      </div>
+
+      <div class="actions">
+        <button class="cart-btn"
+                onclick="addToCart('{{ book.id }}')">
+          Add to Cart
+        </button>
+
+        <form action="/wishlist/remove/{{ book.id }}" method="POST">
+          <button type="submit" class="remove-btn">Remove</button>
+        </form>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    Your wishlist is empty 📭<br>
+    Start adding books you love!
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- ================= CHATBOT ================= -->
+<div class="chatbot-panel" id="chatbotPanel">
+  <div class="chatbot-header">
+    🤖 BookFlix AI
+    <span class="chatbot-close" onclick="toggleChatbot()">✕</span>
+  </div>
+
+  <div class="chatbot-body" id="chatBody">
+    Hi 👋 Tell me your mood or what kind of book you want.
+  </div>
+
+  <div class="chatbot-input">
+    <input id="chatInput" placeholder="Type here..." autocomplete="off">
+    <button onclick="sendChat()">➤</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+function openBook(id){
+  window.location.href="/book-details?book_id="+id;
+}
+
+function addToCart(id){
+  window.location.href="/add-to-cart/"+id;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+
+  <!-- Animation + UI styles -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/animation.css') }}">
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <!-- ================= CHARACTERS ================= -->
+  <div class="characters">
+
+    <div class="char purple">
+      <div class="eyes">
+        <div class="eye"><div class="pupil"></div></div>
+        <div class="eye"><div class="pupil"></div></div>
+      </div>
+      <div class="mouth"></div>
+    </div>
+
+    <div class="char black">
+      <div class="eyes">
+        <div class="eye"><div class="pupil"></div></div>
+        <div class="eye"><div class="pupil"></div></div>
+      </div>
+      <div class="mouth"></div>
+    </div>
+
+    <div class="char orange">
+      <div class="eyes">
+        <div class="eye"><div class="pupil"></div></div>
+        <div class="eye"><div class="pupil"></div></div>
+      </div>
+      <div class="mouth"></div>
+    </div>
+
+    <div class="char yellow">
+      <div class="eyes">
+        <div class="eye"><div class="pupil"></div></div>
+        <div class="eye"><div class="pupil"></div></div>
+      </div>
+      <div class="mouth"></div>
+    </div>
+
+  </div>
+
+  <!-- ================= REGISTER CARD ================= -->
+  <div class="card">
+
+    <h2 style="margin-bottom:16px">Register</h2>
+
+    <!-- MESSAGE AREA -->
+    <div id="formMessage" style="margin-bottom:12px; font-size:14px;"></div>
+
+    <div class="field">
+      <input id="name" type="text" placeholder="Name">
+    </div>
+
+    <div class="field">
+      <input id="email" type="email" placeholder="Email">
+    </div>
+
+    <div class="field">
+      <input id="password" type="password" placeholder="Password">
+    </div>
+
+    <div class="field">
+      <input id="confirmPassword" type="password" placeholder="Confirm Password">
+    </div>
+
+    <!-- SHOW PASSWORD -->
+    <div style="margin:8px 0; font-size:14px;">
+      <input type="checkbox" id="togglePassword">
+      <label for="togglePassword">Show Password</label>
+    </div>
+
+    <div class="field">
+      <button id="sendOtpBtn">Send OTP</button>
+    </div>
+
+    <!-- OTP SECTION -->
+    <div id="otpSection" style="display:none;">
+      <div class="field">
+        <input id="otp" type="text" placeholder="Enter OTP">
+      </div>
+      <div class="field">
+        <button onclick="verifyOTP()">Verify OTP</button>
+      </div>
+    </div>
+
+    <div class="muted" style="margin-top:12px;">
+      Already registered?
+      <a href="/login" style="color:#2563eb;font-weight:600">Login</a>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/animation.js') }}"></script>
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
+
+</body>
+</html>
