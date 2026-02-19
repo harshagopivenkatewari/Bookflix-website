@@ -1,0 +1,185 @@
+:root {
+  --bg: linear-gradient(120deg,#e0e7ff,#fef3c7);
+  --card: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: system-ui, Arial;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== LAYOUT ===== */
+.wrap {
+  width: min(1100px, 95%);
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 64px;
+  align-items: center;
+}
+
+/* ===== CHARACTERS ===== */
+.characters {
+  position: relative;
+  width: 420px;
+  height: 360px;
+}
+
+.char {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .2s ease;
+}
+
+/* Character shapes */
+.char.purple {
+  width: 140px;
+  height: 200px;
+  background: #6b21a8;
+  border-radius: 24px;
+  left: 90px;
+  top: 40px;
+}
+
+.char.black {
+  width: 90px;
+  height: 220px;
+  background: #111827;
+  border-radius: 20px;
+  left: 200px;
+  top: 60px;
+}
+
+.char.orange {
+  width: 220px;
+  height: 120px;
+  background: #fb923c;
+  border-radius: 120px 120px 20px 20px;
+  left: 20px;
+  bottom: 0;
+}
+
+.char.yellow {
+  width: 120px;
+  height: 160px;
+  background: #f59e0b;
+  border-radius: 24px 24px 40px 40px;
+  left: 260px;
+  bottom: 0;
+}
+
+/* ===== EYES ===== */
+.eyes {
+  display: flex;
+  gap: 14px;
+  position: absolute;
+  top: 48px;
+}
+
+.eye {
+  width: 36px;
+  height: 36px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pupil {
+  width: 14px;
+  height: 14px;
+  background: #111;
+  border-radius: 50%;
+  transition: transform .08s linear;
+}
+
+/* ===== MOUTH ===== */
+.mouth {
+  position: absolute;
+  bottom: 26px;
+  width: 46px;
+  height: 6px;
+  background: #ffffff;
+  border-radius: 10px;
+  transition: all .2s ease;
+}
+
+
+.char.happy .mouth {
+  height: 12px;
+  border-radius: 0 0 20px 20px;
+}
+
+.char.shocked .mouth {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+}
+
+/* ===== FORM CARD ===== */
+.card {
+  background: var(--card);
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.15);
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* ===== CHECKBOX ROW (FIXED ALIGNMENT) ===== */
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0 18px;
+  font-size: 14px;
+  color: #111;
+}
+
+.checkbox-row input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.checkbox-row label {
+  cursor: pointer;
+}
+
+/* ===== BUTTON ===== */
+button {
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  border: none;
+  color: white;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.muted {
+  font-size: 13px;
+  color: #6b7280;
+}
